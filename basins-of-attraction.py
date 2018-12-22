@@ -4,8 +4,9 @@
 # Autor: Maciej Mionskowski
 from PIL import Image
 import numpy
+import math
 
-ITERATIONS = 1 << 5
+ITERATIONS = 1 << 32
 PRECISION = 1e-7
 DEFAULT_COLOR = [0, 0, 0]
 
@@ -54,15 +55,16 @@ def point_color(z):
                 continue
 
             # Found which attractor the point belongs to
-            color_intensity = i / ITERATIONS
+            #
+            color_intensity = max(min(i / (1 << 5), 0.95), 0)
             return darken(colors[root_id], color_intensity)
     return DEFAULT_COLOR
 
 
 bounds_x = (-1.5, 1.5)
-width = 2048
+width = 1024
 bounds_y = (-1.5, 1.5)
-height = 2048
+height = 1024
 
 
 def normalize(bounds, perc):
@@ -87,4 +89,3 @@ for x in range(width):
 
 image = Image.fromarray(numpy.asarray(data))
 image.save("out"+str(width)+"-"+str(height)+".png")
-image.show()
